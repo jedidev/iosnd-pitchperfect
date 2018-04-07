@@ -119,11 +119,11 @@
                                     <stackView opaque="NO" contentMode="scaleToFill" distribution="fillEqually" translatesAutoresizingMaskIntoConstraints="NO" id="ftG-3I-AeJ">
                                         <rect key="frame" x="0.0" y="384.66666666666669" width="414" height="184.33333333333331"/>
                                         <subviews>
-                                            <button opaque="NO" tag="4" contentMode="center" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="O9K-Kf-Dav" userLabel="Echo Button">
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="J3f-Gy-Lmv" userLabel="Echo Button">
                                                 <rect key="frame" x="0.0" y="0.0" width="207" height="184.33333333333334"/>
-                                                <state key="normal" title="Button" image="Echo"/>
+                                                <state key="normal" image="Echo"/>
                                                 <connections>
-                                                    <action selector="playSoundForButton:" destination="ddt-rX-q5j" eventType="touchUpInside" id="kkm-Tz-jds"/>
+                                                    <action selector="playSoundForButton:" destination="ddt-rX-q5j" eventType="touchUpInside" id="jaE-Hs-V40"/>
                                                 </connections>
                                             </button>
                                             <button opaque="NO" tag="5" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yJy-8q-A7b" userLabel="Reverb Button">
@@ -161,7 +161,7 @@
                         <viewLayoutGuide key="safeArea" id="21a-iS-Jrh"/>
                     </view>
                     <connections>
-                        <outlet property="echoButton" destination="O9K-Kf-Dav" id="QgI-fd-9N8"/>
+                        <outlet property="echoButton" destination="J3f-Gy-Lmv" id="3d3-uw-XVf"/>
                         <outlet property="fastButtom" destination="hX8-kn-Yj3" id="tKM-2O-N8O"/>
                         <outlet property="highPitchButton" destination="mKZ-N5-fWk" id="aGD-MM-e6v"/>
                         <outlet property="lowPitchButton" destination="TmV-18-WIE" id="Cka-OK-ATE"/>

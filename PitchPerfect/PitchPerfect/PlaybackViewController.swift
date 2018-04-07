@@ -19,10 +19,7 @@ class PlaybackViewController: UIViewController, AudioServiceDelegate {
     @IBOutlet weak var stopButton: UIButton!
     
     @IBAction func playSoundForButton(_ sender: UIButton) {
-        if !isPlaying {
-            isPlaying = true
-            setButtonEnabledness(playing: isPlaying)
-            
+        if !audioService.isPlaying {
             switch(ButtonType(rawValue: sender.tag)!) {
             case .slow:
                 AudioService.shared.playSound(rate: 0.5)
@@ -38,13 +35,13 @@ class PlaybackViewController: UIViewController, AudioServiceDelegate {
                 AudioService.shared.playSound(reverb: true)
             }
         }
+        refreshButtonEnabledness()
     }
     
     @IBAction func stopButtonTapped(_ sender: Any) {
-        if isPlaying {
-            AudioService.shared.stopAudio()
-            isPlaying = false
-            setButtonEnabledness(playing: isPlaying)
+        if audioService.isPlaying {
+            audioService.stopAudio()
+            refreshButtonEnabledness()
         }
     }
     
@@ -52,7 +49,7 @@ class PlaybackViewController: UIViewController, AudioServiceDelegate {
         case slow = 0, fast, chipmunk, vader, echo, reverb
     }
     
-    var isPlaying = false
+    let audioService = AudioService.shared
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -64,30 +61,28 @@ class PlaybackViewController: UIViewController, AudioServiceDelegate {
         echoButton.imageView?.contentMode = .scaleAspectFit
         reverbButton.imageView?.contentMode = .scaleAspectFit
         
-        setButtonEnabledness(playing: isPlaying)
-        AudioService.shared.setupAudioForPlayback(with: self)
+        refreshButtonEnabledness()
+        audioService.setupAudioForPlayback(with: self)
     }
     
-    private func setButtonEnabledness(playing: Bool) {
-        highPitchButton.isEnabled = !playing
-        lowPitchButton.isEnabled = !playing
-        slowButton.isEnabled = !playing
-        fastButtom.isEnabled = !playing
-        echoButton.isEnabled = !playing
-        reverbButton.isEnabled = !playing
+    private func refreshButtonEnabledness() {
+        highPitchButton.isEnabled = !audioService.isPlaying
+        lowPitchButton.isEnabled = !audioService.isPlaying
+        slowButton.isEnabled = !audioService.isPlaying
+        fastButtom.isEnabled = !audioService.isPlaying
+        echoButton.isEnabled = !audioService.isPlaying
+        reverbButton.isEnabled = !audioService.isPlaying
         
-        stopButton.isEnabled = playing
+        stopButton.isEnabled = audioService.isPlaying
     }
     
     func playbackError(title: String?, message: String?) {
-        isPlaying = false
-        setButtonEnabledness(playing: isPlaying)
+        refreshButtonEnabledness()
         showAlert(title!, message: message!)
     }
     
     func finishedPlaying() {
-        isPlaying = false
-        setButtonEnabledness(playing: isPlaying)
+        refreshButtonEnabledness()
     }
     
     func showAlert(_ title: String, message: String) {

@@ -44,9 +44,6 @@ class AudioService : NSObject, AVAudioRecorderDelegate, AVAudioPlayerDelegate {
     let audioSession = AVAudioSession.sharedInstance()
     let fileUrl: URL?
     
-    var isRecording = false
-    var isPlaying = false
-    
     var delegate: AudioServiceDelegate?
     var audioRecorder: AVAudioRecorder!
     
@@ -67,25 +64,49 @@ class AudioService : NSObject, AVAudioRecorderDelegate, AVAudioPlayerDelegate {
         super.init()
     }
     
+    var isPlaying: Bool {
+        get {
+            return audioEngine?.isRunning ?? false
+        }
+    }
+    
+    var isRecording: Bool {
+        get {
+            return audioRecorder?.isRecording ?? false
+        }
+    }
+    
+    var isAvailable: Bool {
+        get {
+            return !isPlaying && !isRecording
+        }
+    }
+    
+    func reset() {
+        if isPlaying {
+            stopAudio()
+        }
+        if isRecording {
+            stopRecording()
+        }
+    }
+    
     func startRecording(with delegate: AudioServiceDelegate) {
         if !isPlaying && !isRecording {
             self.delegate = delegate
             audioRecorder.prepareToRecord()
             audioRecorder.record()
             audioRecorder.delegate = self
-            isRecording = true
         }
     }
     
     func stopRecording() {
         if isRecording {
             audioRecorder.stop()
-            isRecording = false
         }
     }
     
     func audioRecorderDidFinishRecording(_ recorder: AVAudioRecorder, successfully flag: Bool) {
-        isRecording = false
         delegate?.finishedRecording?(success: flag)
     }
     
@@ -95,7 +116,6 @@ class AudioService : NSObject, AVAudioRecorderDelegate, AVAudioPlayerDelegate {
     func setupAudioForPlayback(with delegate: AudioServiceDelegate) {
         
         if isRecording || isPlaying { return }
-        isPlaying = true
         self.delegate = delegate
         do {
             audioFile = try AVAudioFile(forReading: fileUrl!)
@@ -186,12 +206,12 @@ class AudioService : NSObject, AVAudioRecorderDelegate, AVAudioPlayerDelegate {
             stopTimer.invalidate()
         }
         
-        delegate?.finishedPlaying?()
-        
         if let audioEngine = audioEngine {
             audioEngine.stop()
             audioEngine.reset()
         }
+        
+        delegate?.finishedPlaying?()
     }
     
     // MARK: Connect List of Audio Nodes

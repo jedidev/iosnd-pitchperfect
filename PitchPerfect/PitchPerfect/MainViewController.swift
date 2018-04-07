@@ -20,30 +20,33 @@ class MainViewController: UIViewController, AudioServiceDelegate {
     @IBOutlet weak var recordStatusLabel: UILabel!
     
     @IBAction func recordButtonTapped(_ sender: Any) {
-        recordButton.isEnabled = false
-        stopRecordingButton.isEnabled = true
-        recordStatusLabel.text = readyToStopLabel
-        
         audioService.startRecording(with: self)
+        updateControls()
     }
     
     @IBAction func stopRecordingButtonTapped(_ sender: Any) {
-        recordButton.isEnabled = true
-        stopRecordingButton.isEnabled = false
-        recordStatusLabel.text = readyToStartLabel
-        
         audioService.stopRecording()
+        updateControls()
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        stopRecordingButton.isEnabled = false
-        recordStatusLabel.text = readyToStartLabel
+        updateControls()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        audioService.reset()
+        updateControls()
     }
     
     func finishedRecording(success: Bool) {
         performSegue(withIdentifier: "showPlayback", sender: self)
+    }
+    
+    private func updateControls() {
+        recordButton.isEnabled = audioService.isAvailable
+        stopRecordingButton.isEnabled = audioService.isRecording
+        recordStatusLabel.text = audioService.isRecording ? readyToStopLabel : readyToStartLabel
     }
 }
 
